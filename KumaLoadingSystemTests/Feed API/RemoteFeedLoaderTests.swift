@@ -8,20 +8,6 @@
 import XCTest
 import KumaLoadingSystem
 
-class RemoteFeedLoader: FeedLoader {
-  let api: TmdbAPI
-  let client: HTTPClient
-
-  init(api: TmdbAPI, client: HTTPClient) {
-    self.api = api
-    self.client = client
-  }
-
-  func load(completion: @escaping (LoadFeedResult) -> Void) {
-    client.get(from: api) { _ in }
-  }
-}
-
 class RemoteFeedLoaderTests: XCTestCase {
 
   func test_init_doesNotRequestDataFromTmdbAPI() {
