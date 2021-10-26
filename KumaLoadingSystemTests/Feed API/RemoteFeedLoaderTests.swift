@@ -101,6 +101,20 @@ class RemoteFeedLoaderTests: XCTestCase {
     })
   }
 
+  func test_load_doesNotDeliverResultAfterSUTInstanceHasBeenDeallocated() {
+    let feedAPI: TmdbAPI = .feed
+    let client = HTTPClientSpy()
+    var sut: RemoteFeedLoader? = RemoteFeedLoader(api: feedAPI, client: client)
+
+    var capturedResults = [RemoteFeedLoader.Result]()
+    sut?.load { capturedResults.append($0) }
+
+    sut = nil
+    client.complete(withStatusCode: 200, data: makeItemsJSON([]))
+
+    XCTAssertTrue(capturedResults.isEmpty)
+  }
+
   // MARK: - Helpers
 
   private func makeSUT(api: TmdbAPI = .feed, file: StaticString = #file, line: UInt = #line) -> (sut: RemoteFeedLoader, client: HTTPClientSpy) {
