@@ -9,6 +9,8 @@
 /* Begin PBXBuildFile section */
 		49DFAC982727BE0E008C2F6F /* KumaLoadingSystem.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 49DFAC8E2727BE0E008C2F6F /* KumaLoadingSystem.framework */; };
 		49DFACAE2727DA87008C2F6F /* Moya in Frameworks */ = {isa = PBXBuildFile; productRef = 49DFACAD2727DA87008C2F6F /* Moya */; };
+		49DFACB32727E1FD008C2F6F /* FeedItem.swift in Sources */ = {isa = PBXBuildFile; fileRef = 49DFACB22727E1FD008C2F6F /* FeedItem.swift */; };
+		49DFACB52727E255008C2F6F /* FeedLoader.swift in Sources */ = {isa = PBXBuildFile; fileRef = 49DFACB42727E255008C2F6F /* FeedLoader.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -26,6 +28,8 @@
 		49DFAC922727BE0E008C2F6F /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		49DFAC972727BE0E008C2F6F /* KumaLoadingSystemTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = KumaLoadingSystemTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		49DFAC9E2727BE0E008C2F6F /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		49DFACB22727E1FD008C2F6F /* FeedItem.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FeedItem.swift; sourceTree = "<group>"; };
+		49DFACB42727E255008C2F6F /* FeedLoader.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FeedLoader.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -69,7 +73,9 @@
 		49DFAC902727BE0E008C2F6F /* KumaLoadingSystem */ = {
 			isa = PBXGroup;
 			children = (
+				49DFACB72727E483008C2F6F /* Feed API */,
 				49DFAC922727BE0E008C2F6F /* Info.plist */,
+				49DFACB12727E1EF008C2F6F /* Feed Feature */,
 			);
 			path = KumaLoadingSystem;
 			sourceTree = "<group>";
@@ -77,9 +83,33 @@
 		49DFAC9B2727BE0E008C2F6F /* KumaLoadingSystemTests */ = {
 			isa = PBXGroup;
 			children = (
+				49DFACB62727E47B008C2F6F /* Feed API */,
 				49DFAC9E2727BE0E008C2F6F /* Info.plist */,
 			);
 			path = KumaLoadingSystemTests;
+			sourceTree = "<group>";
+		};
+		49DFACB12727E1EF008C2F6F /* Feed Feature */ = {
+			isa = PBXGroup;
+			children = (
+				49DFACB22727E1FD008C2F6F /* FeedItem.swift */,
+				49DFACB42727E255008C2F6F /* FeedLoader.swift */,
+			);
+			path = "Feed Feature";
+			sourceTree = "<group>";
+		};
+		49DFACB62727E47B008C2F6F /* Feed API */ = {
+			isa = PBXGroup;
+			children = (
+			);
+			path = "Feed API";
+			sourceTree = "<group>";
+		};
+		49DFACB72727E483008C2F6F /* Feed API */ = {
+			isa = PBXGroup;
+			children = (
+			);
+			path = "Feed API";
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -145,6 +175,7 @@
 				TargetAttributes = {
 					49DFAC8D2727BE0E008C2F6F = {
 						CreatedOnToolsVersion = 12.5;
+						LastSwiftMigration = 1250;
 					};
 					49DFAC962727BE0E008C2F6F = {
 						CreatedOnToolsVersion = 12.5;
@@ -196,6 +227,8 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				49DFACB52727E255008C2F6F /* FeedLoader.swift in Sources */,
+				49DFACB32727E1FD008C2F6F /* FeedItem.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -341,6 +374,7 @@
 		49DFACA32727BE0E008C2F6F /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				CLANG_ENABLE_MODULES = YES;
 				CODE_SIGN_STYLE = Automatic;
 				COMBINE_HIDPI_IMAGES = YES;
 				DEFINES_MODULE = YES;
@@ -358,6 +392,7 @@
 				PRODUCT_BUNDLE_IDENTIFIER = com.GanNaSong.KumaLoadingSystem;
 				PRODUCT_NAME = "$(TARGET_NAME:c99extidentifier)";
 				SKIP_INSTALL = YES;
+				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
 				SWIFT_VERSION = 5.0;
 			};
 			name = Debug;
@@ -365,6 +400,7 @@
 		49DFACA42727BE0E008C2F6F /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				CLANG_ENABLE_MODULES = YES;
 				CODE_SIGN_STYLE = Automatic;
 				COMBINE_HIDPI_IMAGES = YES;
 				DEFINES_MODULE = YES;
@@ -389,6 +425,7 @@
 		49DFACA62727BE0E008C2F6F /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
 				CLANG_ENABLE_MODULES = YES;
 				CODE_SIGN_STYLE = Automatic;
 				COMBINE_HIDPI_IMAGES = YES;
@@ -409,6 +446,7 @@
 		49DFACA72727BE0E008C2F6F /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
 				CLANG_ENABLE_MODULES = YES;
 				CODE_SIGN_STYLE = Automatic;
 				COMBINE_HIDPI_IMAGES = YES;
