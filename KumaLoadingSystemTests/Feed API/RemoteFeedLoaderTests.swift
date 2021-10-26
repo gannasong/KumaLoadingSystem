@@ -28,7 +28,23 @@ class RemoteFeedLoaderTests: XCTestCase {
     XCTAssertEqual(client.requestedAPIs, [feedAPI])
   }
 
+  func test_loadTwice_requestsDataFromTmdbAPITwice() {
+    let feedAPI: TmdbAPI = .feed
+    let (sut, client) = makeSUT(api: feedAPI)
+
+    sut.load { _ in }
+    sut.load { _ in }
+
+    XCTAssertEqual(client.requestedAPIs, [feedAPI, feedAPI])
+  }
+
   // MARK: - Helpers
+
+  private func makeSUT(api: TmdbAPI) -> (sut: RemoteFeedLoader, client: HTTPClientSpy) {
+    let client = HTTPClientSpy()
+    let sut = RemoteFeedLoader(api: api, client: client)
+    return (sut, client)
+  }
 
   private class HTTPClientSpy: HTTPClient {
     var requestedAPIs = [TmdbAPI]()
