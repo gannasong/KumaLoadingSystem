@@ -46,13 +46,31 @@ class RemoteFeedLoaderTests: XCTestCase {
       client.complete(with: clientError)
     }
   }
-  
+
+  func test_load_deliversErrorOnNon200HTTPResponse() {
+    let (sut, client) = makeSUT()
+
+    let samples = [199, 201, 300, 400, 500]
+
+    samples.enumerated().forEach { index, code in
+      expect(sut, toCompleteWith: failure(.invalidData)) {
+        let json = makeItemsJSON([])
+        client.complete(withStatusCode: code, data: json, at: index)
+      }
+    }
+  }
+
   // MARK: - Helpers
 
   private func makeSUT(api: TmdbAPI = .feed) -> (sut: RemoteFeedLoader, client: HTTPClientSpy) {
     let client = HTTPClientSpy()
     let sut = RemoteFeedLoader(api: api, client: client)
     return (sut, client)
+  }
+
+  private func makeItemsJSON(_ items: [[String: Any]]) -> Data {
+    let json = ["results": items]
+    return try! JSONSerialization.data(withJSONObject: json)
   }
 
   private func expect(_ sut: RemoteFeedLoader, toCompleteWith expectedResult: RemoteFeedLoader.Result, when action: () -> Void, file: StaticString = #file, line: UInt = #line) {
@@ -96,6 +114,14 @@ class RemoteFeedLoaderTests: XCTestCase {
 
     func complete(with error: Error, at index: Int = 0) {
       messages[index].completion(.failure(error))
+    }
+
+    func complete(withStatusCode code: Int, data: Data, at index: Int = 0) {
+      let response = HTTPURLResponse(url: URL(string: "any-\(index)-url.com")!,
+                                     statusCode: code,
+                                     httpVersion: nil,
+                                     headerFields: nil)!
+      messages[index].completion(.success(data, response))
     }
   }
 }

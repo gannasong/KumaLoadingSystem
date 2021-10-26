@@ -15,6 +15,7 @@ public final class RemoteFeedLoader: FeedLoader {
   
   public enum Error: Swift.Error {
     case connectivity
+    case invalidData
   }
 
   public init(api: TmdbAPI, client: HTTPClient) {
@@ -26,7 +27,7 @@ public final class RemoteFeedLoader: FeedLoader {
     client.get(from: api) { result in
       switch result {
       case .success:
-        break
+        completion(.failure(Error.invalidData))
       case .failure:
         completion(.failure(Error.connectivity))
       }
