@@ -103,9 +103,11 @@ class RemoteFeedLoaderTests: XCTestCase {
 
   // MARK: - Helpers
 
-  private func makeSUT(api: TmdbAPI = .feed) -> (sut: RemoteFeedLoader, client: HTTPClientSpy) {
+  private func makeSUT(api: TmdbAPI = .feed, file: StaticString = #file, line: UInt = #line) -> (sut: RemoteFeedLoader, client: HTTPClientSpy) {
     let client = HTTPClientSpy()
     let sut = RemoteFeedLoader(api: api, client: client)
+    trackForMemoryLeaks(client, file: file, line: line)
+    trackForMemoryLeaks(sut, file: file, line: line)
     return (sut, client)
   }
 
