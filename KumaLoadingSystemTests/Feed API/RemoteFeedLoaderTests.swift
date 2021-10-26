@@ -79,6 +79,28 @@ class RemoteFeedLoaderTests: XCTestCase {
     }
   }
 
+  func test_load_deliversItemsOn200HTTPResponseWithJSONItems() {
+    let (sut, client) = makeSUT()
+
+    let item1 = makeItem(id: anyID(),
+                         title: "item1-title",
+                         average: 8.1,
+                         path: "http://a-url.com")
+
+    let item2 = makeItem(id: anyID(),
+                         title: "item2-title",
+                         average: 8.6,
+                         path: "http://another-url.com")
+
+    let items = [item1.model, item2.model]
+
+    expect(sut, toCompleteWith: .success(items), when: {
+      // Conversion to data
+      let json = makeItemsJSON([item1.json, item2.json])
+      client.complete(withStatusCode: 200, data: json)
+    })
+  }
+
   // MARK: - Helpers
 
   private func makeSUT(api: TmdbAPI = .feed) -> (sut: RemoteFeedLoader, client: HTTPClientSpy) {
@@ -87,9 +109,31 @@ class RemoteFeedLoaderTests: XCTestCase {
     return (sut, client)
   }
 
+  private func makeItem(id: Int, title: String, average: Double, path: String) -> (model: FeedItem, json: [String: Any]) {
+
+    let item = FeedItem(id: id, title: title, average: average, url: makeImageURL(withPath: path))
+
+    let json = [
+      "id": id,
+      "title": title,
+      "vote_average": average,
+      "backdrop_path": path
+    ].compactMapValues { $0 }
+
+    return (item, json)
+  }
+
   private func makeItemsJSON(_ items: [[String: Any]]) -> Data {
     let json = ["results": items]
     return try! JSONSerialization.data(withJSONObject: json)
+  }
+
+  func makeImageURL(withPath path: String) -> URL {
+    return URL(string: "https://image.tmdb.org/t/p/w500/")!.appendingPathComponent(path)
+  }
+
+  private func anyID() -> Int {
+    return Int.random(in: 1...10000)
   }
 
   private func expect(_ sut: RemoteFeedLoader, toCompleteWith expectedResult: RemoteFeedLoader.Result, when action: () -> Void, file: StaticString = #file, line: UInt = #line) {

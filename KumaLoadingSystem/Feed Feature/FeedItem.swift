@@ -10,13 +10,13 @@ import Foundation
 public struct FeedItem: Equatable {
   public let id: Int
   public let title: String
-  public let popularity: Int
+  public let average: Double
   public let url: URL
 
-  public init(id: Int, title: String, popularity: Int, url: URL) {
+  public init(id: Int, title: String, average: Double, url: URL) {
     self.id = id
     self.title = title
-    self.popularity = popularity
+    self.average = average
     self.url = url
   }
 }
