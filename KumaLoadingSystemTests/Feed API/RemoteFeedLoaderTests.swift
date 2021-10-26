@@ -60,6 +60,25 @@ class RemoteFeedLoaderTests: XCTestCase {
     }
   }
 
+  func test_load_deliversErrorOn200HTTPResponseWithInvalidJSON() {
+    let (sut, client) = makeSUT()
+
+    expect(sut, toCompleteWith: failure(.invalidData)) {
+      let invalidJSON = Data("invalid json".utf8)
+      client.complete(withStatusCode: 200, data: invalidJSON)
+    }
+  }
+
+  func test_load_deliversNoItemsOn200HTTPResponseWithEmptyJSONList() {
+    let (sut, client) = makeSUT()
+
+    expect(sut, toCompleteWith: .success([])) {
+      // let emptyListJSON = Data("{\"items\": []}".utf8)
+      let emptyListJSON = makeItemsJSON([])
+      client.complete(withStatusCode: 200, data: emptyListJSON)
+    }
+  }
+
   // MARK: - Helpers
 
   private func makeSUT(api: TmdbAPI = .feed) -> (sut: RemoteFeedLoader, client: HTTPClientSpy) {
