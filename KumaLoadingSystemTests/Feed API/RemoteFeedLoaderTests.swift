@@ -42,7 +42,7 @@ class RemoteFeedLoaderTests: XCTestCase {
     let (sut, client) = makeSUT()
 
     expect(sut, toCompleteWith: failure(.connectivity)) {
-      let clientError = NSError(domain: "Test", code: 0)
+      let clientError = anyError()
       client.complete(with: clientError)
     }
   }
@@ -142,14 +142,6 @@ class RemoteFeedLoaderTests: XCTestCase {
   private func makeItemsJSON(_ items: [[String: Any]]) -> Data {
     let json = ["results": items]
     return try! JSONSerialization.data(withJSONObject: json)
-  }
-
-  func makeImageURL(withPath path: String) -> URL {
-    return URL(string: "https://image.tmdb.org/t/p/w500/")!.appendingPathComponent(path)
-  }
-
-  private func anyID() -> Int {
-    return Int.random(in: 1...10000)
   }
 
   private func expect(_ sut: RemoteFeedLoader, toCompleteWith expectedResult: RemoteFeedLoader.Result, when action: () -> Void, file: StaticString = #file, line: UInt = #line) {
