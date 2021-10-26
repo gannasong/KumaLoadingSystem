@@ -3,11 +3,12 @@
 	archiveVersion = 1;
 	classes = {
 	};
-	objectVersion = 50;
+	objectVersion = 52;
 	objects = {
 
 /* Begin PBXBuildFile section */
 		49DFAC982727BE0E008C2F6F /* KumaLoadingSystem.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 49DFAC8E2727BE0E008C2F6F /* KumaLoadingSystem.framework */; };
+		49DFACAE2727DA87008C2F6F /* Moya in Frameworks */ = {isa = PBXBuildFile; productRef = 49DFACAD2727DA87008C2F6F /* Moya */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -32,6 +33,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				49DFACAE2727DA87008C2F6F /* Moya in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -107,6 +109,9 @@
 			dependencies = (
 			);
 			name = KumaLoadingSystem;
+			packageProductDependencies = (
+				49DFACAD2727DA87008C2F6F /* Moya */,
+			);
 			productName = KumaLoadingSystem;
 			productReference = 49DFAC8E2727BE0E008C2F6F /* KumaLoadingSystem.framework */;
 			productType = "com.apple.product-type.framework";
@@ -156,6 +161,9 @@
 				Base,
 			);
 			mainGroup = 49DFAC842727BE0E008C2F6F;
+			packageReferences = (
+				49DFACAC2727DA87008C2F6F /* XCRemoteSwiftPackageReference "Moya" */,
+			);
 			productRefGroup = 49DFAC8F2727BE0E008C2F6F /* Products */;
 			projectDirPath = "";
 			projectRoot = "";
@@ -448,6 +456,25 @@
 			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
+
+/* Begin XCRemoteSwiftPackageReference section */
+		49DFACAC2727DA87008C2F6F /* XCRemoteSwiftPackageReference "Moya" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/Moya/Moya.git";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 15.0.0;
+			};
+		};
+/* End XCRemoteSwiftPackageReference section */
+
+/* Begin XCSwiftPackageProductDependency section */
+		49DFACAD2727DA87008C2F6F /* Moya */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 49DFACAC2727DA87008C2F6F /* XCRemoteSwiftPackageReference "Moya" */;
+			productName = Moya;
+		};
+/* End XCSwiftPackageProductDependency section */
 	};
 	rootObject = 49DFAC852727BE0E008C2F6F /* Project object */;
 }
