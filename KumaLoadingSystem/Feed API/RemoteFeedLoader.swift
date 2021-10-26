@@ -11,12 +11,25 @@ public final class RemoteFeedLoader: FeedLoader {
   private let api: TmdbAPI
   private let client: HTTPClient
 
+  public typealias Result = LoadFeedResult
+  
+  public enum Error: Swift.Error {
+    case connectivity
+  }
+
   public init(api: TmdbAPI, client: HTTPClient) {
     self.api = api
     self.client = client
   }
 
-  public func load(completion: @escaping (LoadFeedResult) -> Void) {
-    client.get(from: api) { _ in }
+  public func load(completion: @escaping (Result) -> Void) {
+    client.get(from: api) { result in
+      switch result {
+      case .success:
+        break
+      case .failure:
+        completion(.failure(Error.connectivity))
+      }
+    }
   }
 }
