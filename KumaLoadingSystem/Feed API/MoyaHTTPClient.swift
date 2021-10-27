@@ -15,7 +15,10 @@ public final class MoyaHTTPClient: HTTPClient {
     self.provider = provider
   }
 
-  private struct UnexpectedValuesRepresentation: Error {}
+  public enum Error: Swift.Error {
+    case requestError
+    case responseError
+  }
 
   public func get(from api: TmdbAPI, completion: @escaping (HTTPClientResult) -> Void) {
     // provider return cancelable
@@ -25,10 +28,11 @@ public final class MoyaHTTPClient: HTTPClient {
         if let response = moyaResponse.response {
           completion(.success(moyaResponse.data, response))
         } else {
-          completion(.failure(UnexpectedValuesRepresentation()))
+          // Moya 先處理好 Error，所以當 statusCode 是 200 時，Stub Error case 會走這邊
+          completion(.failure(Error.responseError))
         }
       case .failure:
-        completion(.failure(UnexpectedValuesRepresentation()))
+        completion(.failure(Error.requestError))
       }
     }
   }

@@ -8,6 +8,7 @@
 
 /* Begin PBXBuildFile section */
 		498FBA4727294C160069BAFB /* MoyaHTTPClient.swift in Sources */ = {isa = PBXBuildFile; fileRef = 498FBA4627294C160069BAFB /* MoyaHTTPClient.swift */; };
+		498FBA4927296BC40069BAFB /* URLProtocolStub.swift in Sources */ = {isa = PBXBuildFile; fileRef = 498FBA4827296BC40069BAFB /* URLProtocolStub.swift */; };
 		49DFAC982727BE0E008C2F6F /* KumaLoadingSystem.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 49DFAC8E2727BE0E008C2F6F /* KumaLoadingSystem.framework */; };
 		49DFACAE2727DA87008C2F6F /* Moya in Frameworks */ = {isa = PBXBuildFile; productRef = 49DFACAD2727DA87008C2F6F /* Moya */; };
 		49DFACB32727E1FD008C2F6F /* FeedItem.swift in Sources */ = {isa = PBXBuildFile; fileRef = 49DFACB22727E1FD008C2F6F /* FeedItem.swift */; };
@@ -34,6 +35,7 @@
 
 /* Begin PBXFileReference section */
 		498FBA4627294C160069BAFB /* MoyaHTTPClient.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MoyaHTTPClient.swift; sourceTree = "<group>"; };
+		498FBA4827296BC40069BAFB /* URLProtocolStub.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = URLProtocolStub.swift; sourceTree = "<group>"; };
 		49DFAC8E2727BE0E008C2F6F /* KumaLoadingSystem.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = KumaLoadingSystem.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		49DFAC922727BE0E008C2F6F /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		49DFAC972727BE0E008C2F6F /* KumaLoadingSystemTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = KumaLoadingSystemTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -151,6 +153,7 @@
 			children = (
 				49DFACC427281834008C2F6F /* XCTestCase+MemoryLeakTracking.swift */,
 				49DFACC627284470008C2F6F /* XCTestCase+Extensions.swift */,
+				498FBA4827296BC40069BAFB /* URLProtocolStub.swift */,
 			);
 			path = Helpers;
 			sourceTree = "<group>";
@@ -288,6 +291,7 @@
 				49DFACB92727E4B8008C2F6F /* RemoteFeedLoaderTests.swift in Sources */,
 				49DFACC727284470008C2F6F /* XCTestCase+Extensions.swift in Sources */,
 				49DFACC527281834008C2F6F /* XCTestCase+MemoryLeakTracking.swift in Sources */,
+				498FBA4927296BC40069BAFB /* URLProtocolStub.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
