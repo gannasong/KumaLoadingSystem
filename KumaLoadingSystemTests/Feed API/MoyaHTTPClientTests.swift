@@ -33,7 +33,38 @@ class MoyaHTTPClientTests: XCTestCase {
 
     let receivedError = resultErrorFor(data: nil, response: nil, error: requestError)
 
-    XCTAssertEqual(receivedError, .requestError)
+    XCTAssertNotNil(receivedError)
+  }
+
+  func test_getFromTarget_failsOnAllInvalidRepresentationCases() {
+    /*
+     These cases should *never* happen, however as `URLSession` represents these fields as optional
+     it is possible in some obscure way that this state _could_ exist.
+     |-----------------------------------------|
+     | Data?    | URLResponse?      | Error?   |
+     |----------|-------------------|----------|
+     | nil      | nil               | nil      |
+     | nil      | URLResponse       | nil      |
+     | value    | nil               | nil      |
+     | value    | nil               | value    |
+     | nil      | URLResponse       | value    |
+     | nil      | HTTPURLResponse   | value    |
+     | value    | HTTPURLResponse   | value    |
+     | value    | URLResponse       | nil      |
+     |-----------------------------------------|
+    */
+
+    // responseError
+    XCTAssertNotNil(resultErrorFor(data: nil, response: nil, error: nil))
+    XCTAssertNotNil(resultErrorFor(data: nil, response: nonHTTPURLResponse(), error: nil))
+    XCTAssertNotNil(resultErrorFor(data: anyData(), response: nonHTTPURLResponse(), error: nil))
+    // responseError
+    XCTAssertNotNil(resultErrorFor(data: anyData(), response: nil, error: nil))
+    XCTAssertNotNil(resultErrorFor(data: anyData(), response: nil, error: anyNSError()))
+    XCTAssertNotNil(resultErrorFor(data: nil, response: nonHTTPURLResponse(), error: anyNSError()))
+    XCTAssertNotNil(resultErrorFor(data: nil, response: anyHTTPURLResponse(), error: anyNSError()))
+    XCTAssertNotNil(resultErrorFor(data: anyData(), response: nonHTTPURLResponse(), error: anyNSError()))
+    XCTAssertNotNil(resultErrorFor(data: anyData(), response: anyHTTPURLResponse(), error: anyNSError()))
   }
 
   // MARK: - Helpers
@@ -57,11 +88,11 @@ class MoyaHTTPClientTests: XCTestCase {
     }
   }
 
-  private func resultErrorFor(data: Data?, response: URLResponse?, error: Error?, file: StaticString = #file, line: UInt = #line) -> MoyaHTTPClient.Error? {
+  private func resultErrorFor(data: Data?, response: URLResponse?, error: Error?, file: StaticString = #file, line: UInt = #line) -> Error? {
     let result = resultFor(data: data, response: response, error: error, file: file, line: line)
 
     switch result {
-    case let .failure(error as MoyaHTTPClient.Error):
+    case let .failure(error):
       return error
     default:
       XCTFail("Expected failure, got \(result) instead", file: file, line: line)
@@ -83,6 +114,14 @@ class MoyaHTTPClientTests: XCTestCase {
 
     wait(for: [exp], timeout: 1.0)
     return receivedResult
+  }
+
+  private func nonHTTPURLResponse() -> URLResponse {
+    return URLResponse(url: anyURL(), mimeType: nil, expectedContentLength: 0, textEncodingName: nil)
+  }
+
+  private func anyHTTPURLResponse() -> HTTPURLResponse {
+    return HTTPURLResponse(url: anyURL(), statusCode: 200, httpVersion: nil, headerFields: nil)!
   }
 
   private class MoyaInterceptingSpy: PluginType {
@@ -123,6 +162,7 @@ class MoyaHTTPClientTests: XCTestCase {
       if let error = stub?.error {
         return .failure(.underlying(error, nil))
       }
+
       return result
     }
   }
