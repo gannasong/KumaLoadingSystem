@@ -18,6 +18,7 @@
 		49DFACC22728172C008C2F6F /* FeedItemsMapper.swift in Sources */ = {isa = PBXBuildFile; fileRef = 49DFACC12728172C008C2F6F /* FeedItemsMapper.swift */; };
 		49DFACC527281834008C2F6F /* XCTestCase+MemoryLeakTracking.swift in Sources */ = {isa = PBXBuildFile; fileRef = 49DFACC427281834008C2F6F /* XCTestCase+MemoryLeakTracking.swift */; };
 		49DFACC727284470008C2F6F /* XCTestCase+Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 49DFACC627284470008C2F6F /* XCTestCase+Extensions.swift */; };
+		49DFACC927284581008C2F6F /* MoyaHTTPClientTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 49DFACC827284581008C2F6F /* MoyaHTTPClientTests.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -44,6 +45,7 @@
 		49DFACC12728172C008C2F6F /* FeedItemsMapper.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FeedItemsMapper.swift; sourceTree = "<group>"; };
 		49DFACC427281834008C2F6F /* XCTestCase+MemoryLeakTracking.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "XCTestCase+MemoryLeakTracking.swift"; sourceTree = "<group>"; };
 		49DFACC627284470008C2F6F /* XCTestCase+Extensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "XCTestCase+Extensions.swift"; sourceTree = "<group>"; };
+		49DFACC827284581008C2F6F /* MoyaHTTPClientTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MoyaHTTPClientTests.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -118,6 +120,7 @@
 			isa = PBXGroup;
 			children = (
 				49DFACB82727E4B8008C2F6F /* RemoteFeedLoaderTests.swift */,
+				49DFACC827284581008C2F6F /* MoyaHTTPClientTests.swift */,
 			);
 			path = "Feed API";
 			sourceTree = "<group>";
@@ -277,6 +280,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				49DFACC927284581008C2F6F /* MoyaHTTPClientTests.swift in Sources */,
 				49DFACB92727E4B8008C2F6F /* RemoteFeedLoaderTests.swift in Sources */,
 				49DFACC727284470008C2F6F /* XCTestCase+Extensions.swift in Sources */,
 				49DFACC527281834008C2F6F /* XCTestCase+MemoryLeakTracking.swift in Sources */,

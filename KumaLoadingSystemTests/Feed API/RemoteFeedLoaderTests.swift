@@ -42,7 +42,7 @@ class RemoteFeedLoaderTests: XCTestCase {
     let (sut, client) = makeSUT()
 
     expect(sut, toCompleteWith: failure(.connectivity)) {
-      let clientError = anyError()
+      let clientError = anyNSError()
       client.complete(with: clientError)
     }
   }
@@ -126,7 +126,6 @@ class RemoteFeedLoaderTests: XCTestCase {
   }
 
   private func makeItem(id: Int, title: String, average: Double, path: String) -> (model: FeedItem, json: [String: Any]) {
-
     let item = FeedItem(id: id, title: title, average: average, url: makeImageURL(withPath: path))
 
     let json = [

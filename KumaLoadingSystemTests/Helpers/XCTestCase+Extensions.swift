@@ -16,7 +16,19 @@ extension XCTestCase {
     return Int.random(in: 1...10000)
   }
 
-  func anyError() -> NSError {
+  func anyNSError() -> NSError {
     return NSError(domain: "Test", code: 0)
+  }
+
+  func anyURL() -> URL {
+    return URL(string: "http://any-url.com")!
+  }
+
+  func feedURL() -> URL {
+    return URL(string: "https://api.themoviedb.org/3/discover/movie?api_key=61c433b8fef1ba8a3d8a518ce6f02576&language=zh-TW&page=1&sort_by=popularity.desc")!
+  }
+  
+  func anyData() -> Data {
+    return Data("any data".utf8)
   }
 }
