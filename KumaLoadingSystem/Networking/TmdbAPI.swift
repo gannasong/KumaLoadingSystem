@@ -27,12 +27,8 @@ extension TmdbAPI: TargetType {
   public var method: Moya.Method {
     return .get
   }
-
-  public var sampleData: Data {
-    return "{}".data(using: String.Encoding.utf8)!
-  }
   
-  private var parameters: [String: Any]? {
+  private var parameters: [String: Any] {
     var parameters: [String: Any] = [:]
     switch self {
     case .feed:
@@ -47,10 +43,6 @@ extension TmdbAPI: TargetType {
   }
 
   public var task: Task {
-    guard let parameters = parameters else {
-      return .requestPlain
-    }
-
     switch self {
     case .feed:
       return .requestParameters(parameters: parameters, encoding: URLEncoding.default)

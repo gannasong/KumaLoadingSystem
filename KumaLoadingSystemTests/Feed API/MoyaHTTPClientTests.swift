@@ -11,13 +11,18 @@ import Moya
 
 class MoyaHTTPClientTests: XCTestCase {
 
+  override func tearDown() {
+    super.tearDown()
+    MoyaInterceptingStub.stopInterceptingRequests()
+  }
+
   func test_getFromTarget_performsGETRequestWithEndpoint() {
-    let endpoint = makeEndpointClosure(target: .feed, data: anyData())
-    let (sut, interceptingSpy) = makeSUT(endpointClosure: endpoint)
+    let endpoint = makeEndpointClosure(data: anyData(), response: anyHTTPURLResponse(), error: nil)
+    let sut = makeSUT(endpointClosure: endpoint)
     let feedURL = feedURL()
     let exp = expectation(description: "Wait for request")
 
-    interceptingSpy.observeRequests { request in
+    MoyaInterceptingStub.observeRequests { request in
       XCTAssertEqual(request.url, feedURL)
       XCTAssertEqual(request.httpMethod, "GET")
       exp.fulfill()
@@ -52,13 +57,11 @@ class MoyaHTTPClientTests: XCTestCase {
      | value    | HTTPURLResponse   | value    |
      | value    | URLResponse       | nil      |
      |-----------------------------------------|
-    */
+     */
 
-    // responseError
     XCTAssertNotNil(resultErrorFor(data: nil, response: nil, error: nil))
     XCTAssertNotNil(resultErrorFor(data: nil, response: nonHTTPURLResponse(), error: nil))
     XCTAssertNotNil(resultErrorFor(data: anyData(), response: nonHTTPURLResponse(), error: nil))
-    // responseError
     XCTAssertNotNil(resultErrorFor(data: anyData(), response: nil, error: nil))
     XCTAssertNotNil(resultErrorFor(data: anyData(), response: nil, error: anyNSError()))
     XCTAssertNotNil(resultErrorFor(data: nil, response: nonHTTPURLResponse(), error: anyNSError()))
@@ -78,21 +81,32 @@ class MoyaHTTPClientTests: XCTestCase {
     XCTAssertEqual(receivedValues?.response.statusCode, response.statusCode)
   }
 
-  // MARK: - Helpers
+  func test_getFromURL_succeedsWithEmptyDataOnHTTPURLResponseWithNilData() {
+    let response = anyHTTPURLResponse()
+    let emptyData = Data()
 
-  private func makeSUT(endpointClosure: @escaping ((TmdbAPI) -> Endpoint), file: StaticString = #file, line: UInt = #line) -> (sut: HTTPClient, interceptingSpy: MoyaInterceptingSpy) {
-    let interceptingSpy = MoyaInterceptingSpy()
-    let provider = MoyaProvider<TmdbAPI>(endpointClosure: endpointClosure, stubClosure: MoyaProvider.immediatelyStub, plugins: [interceptingSpy])
-    let sut = MoyaHTTPClient(provider: provider)
-    trackForMemoryLeaks(sut, file: file, line: line)
-    trackForMemoryLeaks(interceptingSpy, file: file, line: line)
-    return (sut, interceptingSpy)
+    let receivedValues = resultValuesFor(data: emptyData, response: response, error: nil)
+
+    XCTAssertEqual(receivedValues?.data, emptyData)
+    XCTAssertEqual(receivedValues?.response.url, response.url)
+    XCTAssertEqual(receivedValues?.response.statusCode, response.statusCode)
   }
 
-  private func makeEndpointClosure(target: TmdbAPI = .feed, statusCode: Int = 200, data: Data) -> (TmdbAPI) -> Endpoint {
+  // MARK: - Helpers
+
+  private func makeSUT(endpointClosure: @escaping ((TmdbAPI) -> Endpoint), file: StaticString = #file, line: UInt = #line) -> HTTPClient {
+    let provider = MoyaProvider<TmdbAPI>(endpointClosure: endpointClosure, stubClosure: MoyaProvider.immediatelyStub, plugins: [MoyaInterceptingStub()])
+    let sut = MoyaHTTPClient(provider: provider)
+    trackForMemoryLeaks(sut, file: file, line: line)
+    return sut
+  }
+
+  private func makeEndpointClosure(target: TmdbAPI = .feed, data: Data?, response: URLResponse?, error: Error?) -> (TmdbAPI) -> Endpoint {
+    let sampleResponse = makeSampleResponse(data: data, response: response, error: error)
+
     return { (target: TmdbAPI) -> Endpoint in
       return Endpoint(url: URL(target: target).absoluteString,
-                      sampleResponseClosure: { .networkResponse(statusCode , data) },
+                      sampleResponseClosure: { sampleResponse },
                       method: target.method,
                       task: target.task,
                       httpHeaderFields: target.headers)
@@ -123,10 +137,19 @@ class MoyaHTTPClientTests: XCTestCase {
     }
   }
 
+  private func makeSampleResponse(data: Data?, response: URLResponse?, error: Error?) -> EndpointSampleResponse {
+    if let error = error {
+      return .networkError(error as NSError)
+    } else if let data = data, let response = response as? HTTPURLResponse {
+      return .response(response, data)
+    } else {
+      return .networkError(anyNSError())
+    }
+  }
+
   private func resultFor(data: Data?, response: URLResponse?, error: Error?, file: StaticString = #file, line: UInt = #line) -> HTTPClientResult {
-    let endpoint = makeEndpointClosure(target: .feed, data: anyData())
-    let (sut, interceptingSpy) = makeSUT(endpointClosure: endpoint)
-    interceptingSpy.stub(data: data, response: response, error: error)
+    let endpoint = makeEndpointClosure(data: data, response: response, error: error)
+    let sut = makeSUT(endpointClosure: endpoint)
     let exp = expectation(description: "Wait for completion")
 
     var receivedResult: HTTPClientResult!
@@ -145,54 +168,5 @@ class MoyaHTTPClientTests: XCTestCase {
 
   private func anyHTTPURLResponse() -> HTTPURLResponse {
     return HTTPURLResponse(url: anyURL(), statusCode: 200, httpVersion: nil, headerFields: nil)!
-  }
-
-  private class MoyaInterceptingSpy: PluginType {
-    private var stub: Stub?
-    private var requestObserver: ((URLRequest) -> Void)?
-
-    private struct Stub {
-      let data: Data?
-      let response: URLResponse?
-      let error: Error?
-    }
-
-    func stub(data: Data?, response: URLResponse?, error: Error?) {
-      stub = Stub(data: data, response: response, error: error)
-    }
-
-    func observeRequests(observer: @escaping (URLRequest) -> Void) {
-      requestObserver = observer
-    }
-
-    // 發送請求前調用，可以用來對 URLRequest 進行修改
-    func prepare(_ request: URLRequest, target: TargetType) -> URLRequest {
-      return request
-    }
-
-    // 發送請求前最後調用的方法，不管是插樁測試還是真正的網絡請求都會調用這個方法
-    func willSend(_ request: RequestType, target: TargetType) {
-      if let request = request.request {
-        requestObserver?(request)
-      }
-    }
-
-    // 接收到響應結果時調用，會先調用該方法後再調用 MoyaProvider 調用自己的 completionHandler
-    func didReceive(_ result: Result<Response, MoyaError>, target: TargetType) {}
-
-    // 響應結果的預處理器
-    func process(_ result: Result<Response, MoyaError>, target: TargetType) -> Result<Response, MoyaError> {
-      if let error = stub?.error {
-        return .failure(.underlying(error, nil))
-      }
-
-      if let data = stub?.data, let response = stub?.response as? HTTPURLResponse {
-        return .success(Response(statusCode: response.statusCode,
-                                 data: data,
-                                 response: response))
-      }
-
-      return result
-    }
   }
 }
