@@ -142,6 +142,8 @@ class MoyaHTTPClientTests: XCTestCase {
       return .networkError(error as NSError)
     } else if let data = data, let response = response as? HTTPURLResponse {
       return .response(response, data)
+    } else if let data = data {
+      return .networkResponse(200, data)
     } else {
       return .networkError(anyNSError())
     }
