@@ -138,13 +138,14 @@ class MoyaHTTPClientTests: XCTestCase {
   }
 
   private func makeSampleResponse(data: Data?, response: URLResponse?, error: Error?) -> EndpointSampleResponse {
-    if let error = error {
-      return .networkError(error as NSError)
-    } else if let data = data, let response = response as? HTTPURLResponse {
-      return .response(response, data)
-    } else if let data = data {
+    switch (data, response, error) {
+    case let (.some(data), .none, .none):
       return .networkResponse(200, data)
-    } else {
+    case let (.some(data), .some(response as HTTPURLResponse), .none):
+      return .response(response, data)
+    case let (_, _, .some(error)):
+      return .networkError(error as NSError)
+    default:
       return .networkError(anyNSError())
     }
   }
